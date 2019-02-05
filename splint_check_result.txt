@@ -1,0 +1,84 @@
+cppcheck_test.c: (in function file_crash)
+cppcheck_test.c:42:20: Function fgets expects arg 2 to be int gets arbitrary
+                          unsigned integral type: sizeof((text)) - 1
+  To allow arbitrary integral types to match any integral type, use
+  +matchanyintegral.
+cppcheck_test.c:42:2: Called procedure fgets may access global errno
+  A checked global variable is used in the function, but not listed in its
+  globals clause. By default, only globals specified in .lcl files are checked.
+  To check all globals, use +allglobals. To check globals selectively use
+  /*@checked@*/ in the global declaration. (Use -globs to inhibit warning)
+cppcheck_test.c:42:32: Possibly null storage fp passed as non-null param:
+                          fgets (..., fp)
+  A possibly null pointer is passed as a parameter corresponding to a formal
+  parameter with no /*@null@*/ annotation.  If NULL may be used for this
+  parameter, add a /*@null@*/ annotation to the function parameter declaration.
+  (Use -nullpass to inhibit warning)
+   cppcheck_test.c:38:7: Storage fp may become null
+cppcheck_test.c:42:2: Return value (type char *) ignored: fgets(text, size...
+  Result returned by function call is not used. If this is intended, can cast
+  result to (void) to eliminate message. (Use -retvalother to inhibit warning)
+cppcheck_test.c:46:2: Called procedure fclose may access global errno
+cppcheck_test.c:46:2: Return value (type int) ignored: fclose(fp)
+  Result returned by function call is not used. If this is intended, can cast
+  result to (void) to eliminate message. (Use -retvalint to inhibit warning)
+cppcheck_test.c: (in function readdir_crash)
+cppcheck_test.c:72:2: Statement has no effect: (void)prev_entry
+  Statement has no visible effect --- no values are modified. (Use -noeffect to
+  inhibit warning)
+cppcheck_test.c:83:8: Called procedure opendir may access global errno
+cppcheck_test.c:86:20: Possibly null storage dir passed as non-null param:
+                          readdir_r (dir, ...)
+   cppcheck_test.c:83:8: Storage dir may become null
+cppcheck_test.c:86:9: Suspected infinite loop.  No condition values modified. 
+    Modification possible through unconstrained calls: readdir_r
+  This appears to be an infinite loop. Nothing in the body of the loop or the
+  loop test modifies the value of the loop test. There may be a modification
+  through a call to an unconstrained function, or an unconstrained function in
+  the loop test may use a global variable modified by the loop body. (Use
+  -infloopsuncon to inhibit warning)
+cppcheck_test.c:91:2: Called procedure closedir may access global errno
+cppcheck_test.c:91:2: Return value (type int) ignored: closedir(dir)
+cppcheck_test.c:106:30: Initializer block for test_arr has 3 elements, but
+  declared as char * [4]: "abc", "def", "ghi"                             
+  		"jkl"
+  Initializer does not define all elements of a declared array. (Use
+  -initallelements to inhibit warning)
+cppcheck_test.c:107:3: Read-only string literal storage used as initial value
+                          for unqualified storage: test_arr[0] = "abc"
+  A read-only string literal is assigned to a non-observer reference. (Use
+  -readonlytrans to inhibit warning)
+cppcheck_test.c:108:3: Read-only string literal storage used as initial value
+                          for unqualified storage: test_arr[1] = "def"
+cppcheck_test.c:109:3: Read-only string literal storage used as initial value
+    for unqualified storage: test_arr[2] = "ghi"                             
+    		"jkl"
+cppcheck_test.c: (in function parsing_err)
+cppcheck_test.c:126:2: Undocumented use of global errno
+cppcheck_test.c:129:50: Undocumented use of global errno
+cppcheck_test.c:131:2: Undocumented use of global errno
+cppcheck_test.c:132:13: Possibly null storage ptr passed as non-null param:
+                           atoi (strchr(ptr, '1'))
+   cppcheck_test.c:132:13: Storage ptr may become null
+cppcheck_test.c:133:50: Undocumented use of global errno
+cppcheck_test.c: (in function string_search)
+cppcheck_test.c:146:15: Possibly null storage ptr passed as non-null param:
+                           strlen (ptr)
+   cppcheck_test.c:144:8: Storage ptr may become null
+cppcheck_test.c: (in function variable_scope)
+cppcheck_test.c:158:9: Stack-allocated storage ptr reachable from return value:
+                          ptr
+  A stack reference is pointed to by an external reference when the function
+  returns. The stack-allocated storage is destroyed after the call, leaving a
+  dangling reference. (Use -stackref to inhibit warning)
+   cppcheck_test.c:154:2: Storage ptr becomes stack-allocated storage
+cppcheck_test.c: (in function out_of_bounds_access)
+cppcheck_test.c:166:6: Operand of ! is non-boolean (char *): !str
+  The operand of ! operator is a pointer. (Use +ptrnegate to inhibit warning)
+cppcheck_test.c: (in function main)
+cppcheck_test.c:189:11: Fresh storage x not released before return
+  A memory leak has been detected. Storage allocated locally is not released
+  before the last reference to it is lost. (Use -mustfreefresh to inhibit
+  warning)
+   cppcheck_test.c:181:2: Fresh storage x created
+

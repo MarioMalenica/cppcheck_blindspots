@@ -1,0 +1,5 @@
+Version used: Splint 3.1.2 --- 03 May 2009
+
+Command line:
+splint cppcheck_test.c +posixstrictlib -D"__BEGIN_DECLS=" -D"__ssize_t=ssize_t" -D"__intptr_t=intptr_t" -D"__nonnull(x)=" -D"__THROW=" -D"__wur=" -D"__off_t=unsigned" -D"__off64_t=unsigned" -D"__useconds_t=unsigned" -D"__uid_t=unsigned" -D"__gid_t=unsigned" -D"__attribute_deprecated__=" -D"__pid_t=unsigned" -D"__restrict=" -D"__END_DECLS=" -D"__BEGIN_NAMESPACE_STD=" -D"__END_NAMESPACE_STD=" -D"__BEGIN_NAMESPACE_C99=" -D"__END_NAMESPACE_C99="  -D"__socklen_t=unsigned" -D"sa_family_t=unsigned " -D"__mode_t=unsigned" -D"u_int16_t=uint16_t" -D"u_int32_t=uint32_t" -D"u_int8_t=uint8_t" -D"u_short=unsigned short" -D"__u16=uint16_t" -D"__u32=uint32_t" -D"__u64=uint64_t" -D"__attribute_pure__=" -D"__THROWNL=" -checks -I /usr/local/include/ -I /usr/include/
+
