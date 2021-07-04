@@ -164,7 +164,26 @@ static void out_of_bounds_access(char *str)
 	strncpy(buf, str, len);
 }
 
+#define MAX_SIZE (6)
+/* Copy 5 integers from arr1 and one integer outside its boundary into temp[],
+ * starting from temp's second position.
+ * Two array boundary issues and a potential stack corruption. This is a simplified
+ * version of a real-world code. Instead of arr1 it was reading the data from
+ * EEPROM.
+ * Nor gcc 10.3.0 nor Valgrind did not see any issue here.
+ */
+static int buffer_overflow_and_stack_corruption(size_t size)
+{
+    int arr1[] = {1,2,3,4,5};
+    int temp[MAX_SIZE];
+    if(size > MAX_SIZE)
+        size = MAX_SIZE;
+    memcpy(temp + 2, arr1, size);
+    return temp[MAX_SIZE - 1];
+}
+
 int main(void) {
+	(void)buffer_overflow_and_stack_corruption(6);
 	out_of_bounds_access("1");
 	parsing_err();
 	string_search();

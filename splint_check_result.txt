@@ -65,20 +65,37 @@ cppcheck_test.c: (in function string_search)
 cppcheck_test.c:146:15: Possibly null storage ptr passed as non-null param:
                            strlen (ptr)
    cppcheck_test.c:144:8: Storage ptr may become null
-cppcheck_test.c: (in function variable_scope)
-cppcheck_test.c:158:9: Stack-allocated storage ptr reachable from return value:
-                          ptr
-  A stack reference is pointed to by an external reference when the function
-  returns. The stack-allocated storage is destroyed after the call, leaving a
-  dangling reference. (Use -stackref to inhibit warning)
-   cppcheck_test.c:154:2: Storage ptr becomes stack-allocated storage
 cppcheck_test.c: (in function out_of_bounds_access)
-cppcheck_test.c:166:6: Operand of ! is non-boolean (char *): !str
+cppcheck_test.c:155:6: Operand of ! is non-boolean (char *): !str
   The operand of ! operator is a pointer. (Use +ptrnegate to inhibit warning)
+cppcheck_test.c: (in function buffer_overflow_and_stack_corruption)
+cppcheck_test.c:177:8: Operands of > have incompatible types (size_t, int):
+                          size > (6)
+cppcheck_test.c:178:9: Assignment of int to size_t: size = (6)
+cppcheck_test.c:180:12: Array element temp[5] used before definition
+  An rvalue is used that may not be initialized to a value on some execution
+  path. (Use -usedef to inhibit warning)
 cppcheck_test.c: (in function main)
-cppcheck_test.c:189:11: Fresh storage x not released before return
-  A memory leak has been detected. Storage allocated locally is not released
-  before the last reference to it is lost. (Use -mustfreefresh to inhibit
-  warning)
-   cppcheck_test.c:181:2: Fresh storage x created
+cppcheck_test.c:184:45: Function buffer_overflow_and_stack_corruption expects
+                           arg 1 to be size_t gets int: 6
+cppcheck_test.c:32:13: File static function file_crash declared but not used
+  A function is declared but not used. Use /*@unused@*/ in front of function
+  header to suppress message. (Use -fcnuse to inhibit warning)
+   cppcheck_test.c:47:1: Definition of file_crash
+cppcheck_test.c:49:13: File static function buffer_overflow declared but not
+                          used
+   cppcheck_test.c:63:1: Definition of buffer_overflow
+cppcheck_test.c:66:13: File static function readdir_crash declared but not used
+   cppcheck_test.c:97:1: Definition of readdir_crash
+cppcheck_test.c:113:13: File static function str_arr_initalising declared but
+                           not used
+   cppcheck_test.c:119:1: Definition of str_arr_initalising
+cppcheck_test.c:121:13: File static function parsing_err declared but not used
+   cppcheck_test.c:137:1: Definition of parsing_err
+cppcheck_test.c:139:13: File static function string_search declared but not
+                           used
+   cppcheck_test.c:148:1: Definition of string_search
+cppcheck_test.c:151:13: File static function out_of_bounds_access declared but
+                           not used
+   cppcheck_test.c:165:1: Definition of out_of_bounds_access
 
