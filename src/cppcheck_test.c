@@ -147,17 +147,6 @@ static void string_search(void)
 	(void)printf("Substring is at the position %u", (unsigned int)len);
 }
 
-static int* variable_scope(void)
-{
-	int *ptr;
-	int x = (int)time(NULL);
-	ptr = &x;
-	(void)printf("Ptr points to %d\n", *ptr);
-
-	/* We are now returning pointer to a local variable. */
-	return ptr;
-}
-
 /* Overflow (strncpy) because size_t is an unsigned value */
 static void out_of_bounds_access(char *str)
 {
@@ -176,10 +165,7 @@ static void out_of_bounds_access(char *str)
 }
 
 int main(void) {
-	int *x;
 	out_of_bounds_access("1");
-	x = variable_scope();
-	(void)printf("Result X is: %d\n", *x);
 	parsing_err();
 	string_search();
 	str_arr_initalising();
