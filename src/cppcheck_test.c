@@ -8,7 +8,7 @@
  * Neither cppcheck or gcc were able to find a single error
  * or warning in this code.
  *
- * Note: Comments are valid for cppcheck version 1.86.
+ * Note: Comments are valid for cppcheck version 2.41.
  *
  * Splint was used as a reference static analysis tool.
  * Result of its scan is stored in "splint_check_result.txt"
