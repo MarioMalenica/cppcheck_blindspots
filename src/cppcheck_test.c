@@ -165,25 +165,40 @@ static void out_of_bounds_access(char *str)
 }
 
 #define MAX_SIZE (6)
-/* Copy 5 integers from arr1 and one integer outside its boundary into temp[],
- * starting from temp's second position.
+struct foo
+{
+	int arry[MAX_SIZE];
+	int some_val;
+};
+/* Copy 5 integers from arr1 and one integer outside its boundary into foo.arry,
+ * starting from foo.arry's third member.
  * Two array boundary issues and a potential stack corruption. This is a simplified
  * version of a real-world code. Instead of arr1 it was reading the data from
  * EEPROM.
  * Nor gcc 10.3.0 nor Valgrind did not see any issue here.
  */
-static int buffer_overflow_and_stack_corruption(size_t size)
+static void buffer_overflow_and_stack_corruption(size_t size, struct foo *foo_param)
 {
-    int arr1[] = {1,2,3,4,5};
-    int temp[MAX_SIZE];
-    if(size > MAX_SIZE)
-        size = MAX_SIZE;
-    memcpy(temp + 2, arr1, size);
-    return temp[MAX_SIZE - 1];
+	int arr1[] = {1,2,3,4,5};
+	foo_param->some_val = 3;
+	if(size > MAX_SIZE)
+		size = MAX_SIZE;
+	/* First two bytes were used for a header, and then someone tried to
+	 * copy the data after the array boundary.
+         */
+	memcpy(foo_param->arry + 2, arr1, sizeof(int) * size);
+	for(int n = 0; n < MAX_SIZE; n++)
+	{
+		printf("%d ", foo_param->arry[n]);
+	}
+	printf("\n");
 }
 
 int main(void) {
-	(void)buffer_overflow_and_stack_corruption(6);
+	struct foo foo1;
+	memset(&foo1, 0, sizeof(foo1));
+	buffer_overflow_and_stack_corruption(8, &foo1);
+	printf("some_val: %d\n", foo1.some_val);
 	out_of_bounds_access("1");
 	parsing_err();
 	string_search();
