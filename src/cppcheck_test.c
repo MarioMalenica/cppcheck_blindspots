@@ -5,10 +5,8 @@
  * the following options:
  * -pedantic -Wall -Wextra -Wconversion
  *
- * Neither cppcheck or gcc were able to find a single error
- * or warning in this code.
+ * Neither cppcheck 2.4.1 or gcc were able to find a single error
  *
- * Note: Comments are valid for cppcheck version 2.41.
  *
  * Splint was used as a reference static analysis tool.
  * Result of its scan is stored in "splint_check_result.txt"
@@ -48,7 +46,7 @@ static void file_crash(void)
 
 static void buffer_overflow(void)
 {
-	char *foo = "12345abcde";
+	const char *foo = "12345abcde";
 	char bar[9];
 	size_t len;
 	int cmp;
@@ -66,34 +64,24 @@ static void buffer_overflow(void)
 static void readdir_crash(void)
 {
 	DIR *dir;
-	struct dirent *entry;
-	struct dirent *prev_entry = NULL;
-	/* Suppress compiler warning */
-	(void) prev_entry;
-
-	/* Just allocate some size large enough for this test
-	 * and avoid subtle differences between different OSs
-	 * related to NAME_MAX size.
-	 */
-	entry = (struct dirent*) calloc((size_t)1, (size_t)0xFFFF);
-	if(entry == NULL)
-		return;
+	struct dirent *entry = NULL;
 
 	/* Not checking if the return value is NULL. */
 	dir = opendir("nonexisting_folder");
 
-	/* This can cause a segmentation fault if dir is NULL. */
-	while ((readdir_r(dir, entry, &prev_entry)) == 0) {
+	do {
+		/* This might cause a segmentation fault. And if it does not,
+		 * we're not checking result of function call.
+		 */
+		entry = readdir(dir);
+		/* And if the previous one doesn't crash, this one will try to
+		 * dereference a null pointer.
+		 */
 		(void)printf("%s\n", entry->d_name);
-	}
+	} while(entry != NULL);
 
 	/* Not checking result of function call. closedir() can fail */
 	closedir(dir);
-	free(entry);
-
-	/* Note: cppcheck flags readdir() as not being thread safe.
-	 * At the same time glibc (version >= 2.24) is treating
-	 * readdir_r as deprecated and readdir()/readdir64() as thread-safe */
 }
 #else
 static void readdir_crash(void)
@@ -121,7 +109,7 @@ static void str_arr_initalising(void)
 static void parsing_err(void)
 {
 	/* atoi() will happily parse any garbage data and try to return a (meaningful) result. */
-	char *ptr = "abcdef";
+	const char *ptr = "abcdef";
 	int val;
 	errno = 0;
 	val = atoi(ptr);
@@ -138,8 +126,8 @@ static void parsing_err(void)
 
 static void string_search(void)
 {
-	char *str = "1234567890";
-	char *ptr;
+	const char *str = "1234567890";
+	const char *ptr;
 	size_t len = 0;
 	ptr = strstr(str, "abc");
 	/* Not checking if ptr is NULL. */
@@ -148,7 +136,7 @@ static void string_search(void)
 }
 
 /* Overflow (strncpy) because size_t is an unsigned value */
-static void out_of_bounds_access(char *str)
+static void out_of_bounds_access(const char *str)
 {
 	char buf[64];
 	size_t len;
@@ -175,10 +163,11 @@ struct foo
  * Two array boundary issues and a potential stack corruption. This is a simplified
  * version of a real-world code. Instead of arr1 it was reading the data from
  * EEPROM.
- * Nor gcc 10.3.0 nor Valgrind did not see any issue here.
+ * gcc 10.3.0 and Valgrind did not see any issue here.
  */
 static void buffer_overflow_and_stack_corruption(size_t size, struct foo *foo_param)
 {
+	int n;
 	int arr1[] = {1,2,3,4,5};
 	foo_param->some_val = 3;
 	if(size > MAX_SIZE)
@@ -187,7 +176,7 @@ static void buffer_overflow_and_stack_corruption(size_t size, struct foo *foo_pa
 	 * copy the data after the array boundary.
          */
 	memcpy(foo_param->arry + 2, arr1, sizeof(int) * size);
-	for(int n = 0; n < MAX_SIZE; n++)
+	for(n = 0; n < MAX_SIZE; n++)
 	{
 		printf("%d ", foo_param->arry[n]);
 	}
